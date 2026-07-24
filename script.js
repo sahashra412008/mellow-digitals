@@ -13,10 +13,14 @@ const firebaseConfig = {
   measurementId: "G-5VPQRFY74P"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// Initialize Firebase safely
+if (typeof firebase !== 'undefined') {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  console.error("Firebase library failed to load.");
+}
 
+const db = firebase.firestore();
 // --- LOAD CUSTOMERS FROM CLOUD ---
 let customers = [];
 
