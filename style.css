@@ -1,0 +1,267 @@
+/* ==========================================================================
+   1. CORE THEME & BASE STYLES (ORANGE & DEEP BLACK)
+   ========================================================================== */
+body {
+  background-color: #0d0d0d;
+  color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.navbar-brand.text-warning, .navbar-brand {
+  color: #ff9800 !important;
+  text-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
+  border: none !important;
+  color: #000000 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.3);
+}
+
+.btn-warning:hover, .btn-warning:focus {
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%) !important;
+  color: #000000 !important;
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.btn-outline-warning {
+  color: #ff9800 !important;
+  border-color: #ff9800 !important;
+}
+
+.btn-outline-warning:hover {
+  background: #ff9800 !important;
+  color: #000000 !important;
+}
+
+.text-warning {
+  color: #ff9800 !important;
+}
+
+/* ==========================================================================
+   2. INTRO SPLASH SCREEN
+   ========================================================================== */
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #050505;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: splashFadeOut 2.2s ease-in-out forwards;
+}
+
+.splash-logo {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #ff9800;
+  letter-spacing: 2px;
+  animation: logoScale 1.8s ease-in-out forwards;
+}
+
+@keyframes logoScale {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  80% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(0.3); opacity: 0; }
+}
+
+@keyframes splashFadeOut {
+  0%, 80% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+/* ==========================================================================
+   3. SIDEBAR ACTIVE BUTTON STATES
+   ========================================================================== */
+.nav-btn {
+  background-color: #1a1a1a;
+  border: 1px solid #333333;
+  color: #f8f9fa;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-btn:hover {
+  background-color: #262626;
+  color: #ff9800;
+  border-color: #ff9800;
+}
+
+.nav-btn.active-tab {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00) !important;
+  color: #000000 !important;
+  font-weight: 700;
+  border-color: #ffb74d !important;
+  box-shadow: 0 0 12px rgba(255, 152, 0, 0.4);
+}
+
+/* ==========================================================================
+   4. BADGES (WHITE BACKGROUND STYLING)
+   ========================================================================== */
+.adv-badge-container {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.balance-badge-container {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.extra-small {
+  font-size: 0.68rem;
+  letter-spacing: 0.5px;
+}
+
+.custom-checkbox {
+  width: 1.4rem;
+  height: 1.4rem;
+  cursor: pointer;
+  accent-color: #ff9800;
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   5. FORM CONTROLS & DROPDOWNS
+   ========================================================================== */
+.form-control, .form-select {
+  background-color: #141414;
+  color: #f8f9fa;
+  border: 1px solid #262626;
+  border-radius: 8px;
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #ff9800 !important;
+  box-shadow: 0 0 0 0.25rem rgba(255, 152, 0, 0.25);
+}
+
+.form-control::placeholder {
+  color: #737373;
+  font-weight: 300;
+}
+
+.list-group-item-action {
+  background-color: #141414;
+  color: #f8f9fa;
+  border-color: #262626;
+}
+
+.list-group-item-action:hover {
+  background-color: #262626;
+  color: #ff9800;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   6. WHITE EVENT TABLE THEME OVERRIDES
+   ========================================================================== */
+.white-table-card {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.white-table-card h6, .white-table-card label, .white-table-card span {
+  color: #000000 !important;
+}
+
+.table-light-theme {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.table-light-theme th {
+  background-color: #e9ecef !important;
+  color: #000000 !important;
+  border-color: #dee2e6 !important;
+}
+
+.table-light-theme td {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #dee2e6 !important;
+}
+
+.table-light-theme input, .table-light-theme select {
+  background-color: #f8f9fa !important;
+  color: #000000 !important;
+  border: 1px solid #ced4da !important;
+}
+
+/* ==========================================================================
+   7. CALCULATOR CUSTOM MODAL POSITIONING
+   ========================================================================== */
+.calc-modal .modal-dialog {
+  position: fixed !important;
+  left: 20px !important;
+  bottom: 95px !important;
+  margin: 0 !important;
+  max-width: 320px !important;
+  transform: none !important;
+}
+
+.calc-modal .modal-content {
+  background-color: #161616;
+  border: 1px solid #ff9800;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.calc-display {
+  background-color: #0a0a0a;
+  color: #ff9800;
+  border: 1px solid #333333;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: right;
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.calc-btn {
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.75rem 0;
+  border-radius: 8px;
+}
+
+.fixed-bottom-left-badge {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 1050;
+  background: linear-gradient(135deg, #161616 0%, #0d0d0d 100%);
+  border: 2px solid #ff9800;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+  min-width: 170px;
+}
+
+@media (max-width: 768px) {
+  .splash-logo { font-size: 2.2rem; }
+  .calc-modal .modal-dialog { left: 10px !important; right: 10px !important; max-width: calc(100% - 20px) !important; }
+}
+
+@media print {
+  body * { visibility: hidden; }
+  #printableArea, #printableArea * { visibility: visible; }
+  #printableArea { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; background-color: #fff !important; }
+}

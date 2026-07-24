@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mellow Digitals - Customer Data Management</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <h1 class="splash-logo">MELLOW DIGITALS</h1>
+  </div>
+
+  <div id="app-content" class="d-none">
+    
+    <nav class="navbar custom-navbar sticky-top shadow-sm px-3 bg-black border-bottom border-secondary">
+      <span class="navbar-brand fw-bold fs-4 text-warning" style="cursor: pointer;" onclick="showSection('home')">MELLOW DIGITALS</span>
+    </nav>
+
+    <div class="container-fluid py-3 px-3 px-md-4">
+
+      <!-- HOME SECTION -->
+      <div id="home-section" class="d-flex align-items-center justify-content-center text-center" style="min-height: calc(85vh - 60px);">
+        <div class="premium-card p-4 p-md-5 col-12 col-md-8 col-lg-6 mx-auto text-center shadow-lg bg-black border border-secondary rounded-4">
+          <h1 class="display-5 fw-bold text-warning mb-2">Welcome Reddy</h1>
+          <p class="text-muted mb-4">Select a module to manage customer records.</p>
+          <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <button class="btn btn-warning btn-lg px-4 py-3" onclick="showSection('editing')">Video Editing Services</button>
+            <button class="btn btn-outline-light btn-lg px-4 py-3" onclick="showSection('sales')">Accessories Sales</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIDEO EDITING SECTION -->
+      <div id="editing-section" class="d-none">
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="text-warning fw-bold m-0 fs-4">Video Editing Services</h3>
+          <button class="btn btn-outline-light btn-sm px-3" onclick="showSection('home')">← Home</button>
+        </div>
+
+        <div class="row g-3">
+          
+          <!-- LEFT SIDEBAR -->
+          <div class="col-12 col-md-3 col-lg-2">
+            <div class="p-2 sticky-md-top bg-black border border-secondary rounded-3" style="top: 80px;">
+              <div class="d-grid gap-2">
+                <button class="btn nav-btn text-start py-2 px-3 btn-sm text-white" id="btn-new-cust" onclick="showEditingSubTab('new')">
+                  ➕ New Customer
+                </button>
+                <button class="btn nav-btn text-start py-2 px-3 btn-sm text-white" id="btn-exist-cust" onclick="showEditingSubTab('existing')">
+                  🔍 Existing Customer
+                </button>
+                <button class="btn nav-btn text-start py-2 px-3 btn-sm text-white" id="btn-history-cust" onclick="showEditingSubTab('history')">
+                  🖨️ History / Print
+                </button>
+                <button class="btn nav-btn text-start py-2 px-3 btn-sm text-white" id="btn-db-view" onclick="showEditingSubTab('database')">
+                  📊 Customer Database
+                </button>
+
+                <hr class="my-2 border-secondary">
+                <button id="calculatorTriggerBtn" class="btn btn-outline-warning text-start py-2 px-3 btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#calculatorModal">
+                  🧮 Calculator
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT CONTENT AREA -->
+          <div class="col-12 col-md-9 col-lg-10">
+
+            <!-- SUB TAB 1: NEW CUSTOMER -->
+            <div id="sub-new-customer" class="p-4 mx-auto bg-black border border-secondary rounded-4 shadow" style="max-width: 650px;">
+              <div class="border-bottom border-secondary pb-3 mb-3 text-center">
+                <h5 class="text-warning fw-bold mb-0">Add New Customer Record</h5>
+              </div>
+              
+              <div id="phoneAlert" class="alert alert-danger d-none py-2 px-3 mb-3 small" role="alert">
+                ⚠️ <strong>Phone number already exists!</strong> Please check existing records.
+              </div>
+
+              <form id="newCustomerForm" onsubmit="handleNewCustomerSubmit(event)">
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <label class="form-label text-warning small fw-bold">1. Studio Name</label>
+                    <input type="text" class="form-control" id="studioName" placeholder="Enter studio name" required autocomplete="off">
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label text-warning small fw-bold">2. Customer Name</label>
+                    <input type="text" class="form-control" id="custName" placeholder="Enter customer name" required autocomplete="off">
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <label class="form-label text-warning small fw-bold">3. Phone Number</label>
+                    <div class="input-group">
+                      <input type="tel" class="form-control" id="phoneNo" placeholder="10-digit phone number" oninput="checkDuplicatePhone(this.value)" required autocomplete="off">
+                      <button class="btn btn-success border-0" type="button" onclick="openNewCustomerWhatsapp()" title="Open WhatsApp Chat" style="background-color: #25D366; display: flex; align-items: center; justify-content: center; padding: 0.375rem 0.75rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                          <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.601 2.326zm-5.607 12.1a6.57 6.57 0 0 1-3.351-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.558 6.558 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.012-.304.086-.403.087-.088.197-.232.296-.348.1-.113.133-.197.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.808 2.049.098.133 1.394 2.131 3.382 2.992.474.205.844.328 1.132.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <label class="form-label text-warning small fw-bold">4. Address</label>
+                    <input type="text" class="form-control" id="address" placeholder="Enter address" required autocomplete="off">
+                  </div>
+
+                  <div class="col-12 text-end mt-3">
+                    <button type="submit" id="saveCustBtn" class="btn btn-warning px-4 py-2">Save Customer Record</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- SUB TAB 2: EXISTING CUSTOMER -->
+            <div id="sub-existing-customer" class="d-none">
+              <div class="p-3 mb-3 text-center bg-black border border-secondary rounded-4 shadow">
+                <label class="form-label text-warning mb-2 fs-6 fw-bold">Search Studio or Customer</label>
+                <div class="position-relative mx-auto" style="max-width: 480px;">
+                  <input type="text" id="customerSearchInput" class="form-control text-center py-2" placeholder="🔍 Search Studio / Customer / Phone..." oninput="searchCustomers()" autocomplete="off">
+                  <div id="searchResultsList" class="list-group position-absolute w-100 z-3 shadow-lg mt-1 text-start"></div>
+                </div>
+              </div>
+
+              <!-- Selected Customer Container -->
+              <div id="selectedCustomerContainer" class="d-none">
+                
+                <div class="p-3 mb-3 bg-black border border-secondary rounded-4 shadow sticky-top" style="top: 75px; z-index: 1020;">
+                  <div class="row align-items-center g-2">
+                    <div class="col-12 col-md-7">
+                      <div class="d-flex align-items-center gap-3">
+                        <h4 class="text-warning fw-bold mb-0" id="displayStudioName">--</h4>
+                        <button type="button" class="btn btn-outline-danger btn-sm py-1 px-2 fw-semibold" onclick="deleteCurrentCustomer()">🗑️ Delete</button>
+                      </div>
+                      <p class="small mb-1 mt-2 text-muted">
+                        <span class="text-primary fw-bold">Customer:</span> <span id="displayCustName" class="text-white fw-semibold">--</span> | 
+                        <span class="text-primary fw-bold">Phone:</span> <span id="displayPhone" class="text-white fw-semibold">--</span>
+                        <a id="displayWhatsappLink" href="#" target="_blank" class="ms-1 text-decoration-none">💬</a>
+                      </p>
+                      <p class="small mb-0 text-muted"><span class="text-primary fw-bold">Address:</span> <span id="displayAddress" class="text-white fw-semibold">--</span></p>
+                    </div>
+                    <div class="col-12 col-md-5 text-md-end pt-2 pt-md-0">
+                      <p class="small text-muted mb-2">Timestamp: <span class="text-warning fw-semibold" id="displayDateTime">--</span></p>
+                      <div class="d-flex justify-content-md-end gap-2">
+                        <div class="adv-badge-container p-2 text-center flex-fill">
+                          <span class="d-block extra-small text-dark fw-bold">ADVANCE</span>
+                          <span class="fs-6 fw-bold text-dark" id="displayAdvTotal">₹0</span>
+                        </div>
+                        <div class="balance-badge-container p-2 text-center flex-fill">
+                          <span class="d-block extra-small text-dark fw-bold">BALANCE</span>
+                          <span class="fs-6 fw-bold" id="displayBalanceTotal">₹0</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ADD EVENT ENTRY FORM -->
+                <div class="p-4 mb-3 mx-auto bg-black border border-secondary rounded-4 shadow" style="max-width: 680px;">
+                  <h5 class="text-warning fw-bold mb-3">Add Event Entry</h5>
+                  <form id="quickEventForm" onsubmit="handleQuickEventSave(event)">
+                    <div class="row g-3">
+                      <div class="col-12">
+                        <label class="form-label text-warning small fw-bold">1. Event Description</label>
+                        <input type="text" class="form-control" id="quickEventTitle" placeholder="Enter event name/title" required autocomplete="off">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label text-warning small fw-bold">2. Advance Amount (₹)</label>
+                        <input type="number" class="form-control" id="quickEventAdv" placeholder="Enter advance paid" min="0" value="0" required autocomplete="off">
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label text-warning small fw-bold">3. Remarks</label>
+                        <textarea class="form-control" id="quickEventRemarks" rows="2" placeholder="Enter remarks" autocomplete="off"></textarea>
+                      </div>
+                      <div class="col-12 text-end mt-3">
+                        <button type="submit" class="btn btn-warning px-4 py-2">Save Event</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Event Details Table Card (White Background Theme) -->
+                <div class="p-3 white-table-card border rounded-4 shadow">
+                  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <h6 class="m-0 fw-bold">Customer Event Details & Entry</h6>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <select id="visitDatesDropdown" class="form-select form-select-sm py-1 px-2" style="width: 150px;" onchange="onVisitDateSelect(this.value)">
+                        <option value="all">-- All Dates --</option>
+                      </select>
+                      <button type="button" class="btn btn-outline-dark btn-sm px-3" onclick="enableTableEditing()">Edit Table</button>
+                      <button type="button" class="btn btn-warning btn-sm px-3 text-dark fw-bold" onclick="saveEventEntries()">Save Table Updates</button>
+                    </div>
+                  </div>
+
+                  <div class="table-responsive mb-2">
+                    <table class="table table-light-theme table-striped align-middle text-nowrap">
+                      <thead>
+                        <tr>
+                          <th style="width: 40px;">#</th>
+                          <th style="width: 130px;">Date</th>
+                          <th style="min-width: 160px;">Event</th>
+                          <th style="width: 90px;">Duration</th>
+                          <th style="width: 110px;">Charge (₹)</th>
+                          <th style="width: 110px;">Adv (₹)</th>
+                          <th style="width: 110px;">Paid (₹)</th>
+                          <th style="width: 110px;">Balance (₹)</th>
+                          <th style="min-width: 140px;">Remarks</th>
+                          <th style="width: 80px;" class="text-center">Handover</th>
+                          <th style="width: 50px;" class="text-center">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="existingEventsTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SUB TAB 3: HISTORY / PRINT -->
+            <div id="sub-history" class="d-none">
+              <div class="p-3 mb-3 text-center bg-black border border-secondary rounded-4 shadow">
+                <label class="form-label text-warning mb-2 fs-6 fw-bold">Select Customer History</label>
+                <div class="position-relative mx-auto" style="max-width: 480px;">
+                  <input type="text" id="historySearchInput" class="form-control text-center py-2" placeholder="🔍 Search Studio / Customer / Phone..." oninput="handleHistorySearchInput(this.value)" autocomplete="off">
+                  <div id="historyDropdown" class="list-group position-absolute w-100 z-3 shadow-lg d-none mt-1 text-start"></div>
+                </div>
+              </div>
+
+              <div id="historyDisplayContainer" class="d-none">
+                <div id="printableArea" class="p-4 mb-3 bg-black border border-secondary rounded-4 shadow text-white">
+                  <div class="pb-3 mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2 border-bottom border-secondary">
+                    <div>
+                      <h4 class="text-warning fw-bold mb-1" id="histStudioName">--</h4>
+                      <p class="mb-1 small text-muted"><span class="text-primary fw-bold">Customer:</span> <span id="histCustName" class="text-white fw-semibold">--</span> | <span class="text-primary fw-bold">Phone:</span> <span id="histPhone" class="text-white fw-semibold">--</span></p>
+                      <p class="mb-0 small text-muted"><span class="text-primary fw-bold">Address:</span> <span id="histAddress" class="text-white fw-semibold">--</span></p>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <div class="adv-badge-container p-2 text-center">
+                        <span class="d-block extra-small text-dark fw-bold">ADVANCE</span>
+                        <span class="fs-6 fw-bold text-dark" id="histTotalAdv">₹0</span>
+                      </div>
+                      <div class="balance-badge-container p-2 text-center">
+                        <span class="d-block extra-small text-dark fw-bold">BALANCE</span>
+                        <span class="fs-6 fw-bold text-dark" id="histTotalBal">₹0</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h6 class="text-warning mb-3 fw-bold">Event History Records</h6>
+                  <div class="table-responsive">
+                    <table class="table table-dark table-striped align-middle text-nowrap">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Date</th>
+                          <th>Event</th>
+                          <th>Duration</th>
+                          <th>Charge (₹)</th>
+                          <th>Adv (₹)</th>
+                          <th>Paid (₹)</th>
+                          <th>Balance (₹)</th>
+                          <th>Remarks</th>
+                          <th class="text-center">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="historyTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-black border border-secondary rounded-4 shadow">
+                  <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-3">
+                      <label class="form-label text-warning small fw-bold">Range</label>
+                      <select id="exportRangeOption" class="form-select" onchange="toggleCustomDateInputs(this.value)">
+                        <option value="all">Full History</option>
+                        <option value="custom">Custom Date Range</option>
+                      </select>
+                    </div>
+                    <div class="col-6 col-md-3 d-none" id="fromDateCol">
+                      <label class="form-label text-warning small fw-bold">From</label>
+                      <input type="date" class="form-control" id="exportFromDate">
+                    </div>
+                    <div class="col-6 col-md-3 d-none" id="toDateCol">
+                      <label class="form-label text-warning small fw-bold">To</label>
+                      <input type="date" class="form-control" id="exportToDate">
+                    </div>
+                    <div class="col-12 col-md-3">
+                      <label class="form-label text-warning small fw-bold">Format</label>
+                      <select id="exportFormatOption" class="form-select">
+                        <option value="printer">Printer</option>
+                        <option value="pdf">Save as PDF</option>
+                        <option value="excel">Export Excel (.csv)</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-3 ms-auto">
+                      <button type="button" class="btn btn-warning w-100 py-2 text-dark fw-bold" onclick="executeExportOrPrint()">Print / Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SUB TAB 4: DATABASE SPREADSHEET -->
+            <div id="sub-database-view" class="d-none">
+              <div class="p-3 bg-black border border-secondary rounded-4 shadow">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                  <h6 class="text-warning fw-bold m-0 fs-5">📊 Customer Database</h6>
+                  <input type="text" id="dbSearchInput" class="form-control py-1" style="width: 280px;" placeholder="🔍 Filter database..." oninput="filterDatabaseTable(this.value)">
+                </div>
+                <div class="table-responsive mb-3">
+                  <table class="table table-dark table-striped align-middle text-nowrap">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Studio Name</th>
+                        <th>Customer Name</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th style="width: 80px;" class="text-center">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="databaseTableBody"></tbody>
+                  </table>
+                </div>
+                <div class="text-end">
+                  <button type="button" class="btn btn-warning fw-bold px-4 py-2 text-dark" onclick="saveDatabaseSpreadsheet()">Save Database Updates</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCESSORIES SALES SECTION -->
+      <div id="sales-section" class="d-none">
+        <div class="p-5 text-center bg-black border border-secondary rounded-4 shadow">
+          <h3 class="text-warning mb-2">Accessories Sales Section</h3>
+          <p class="text-muted">This section will be added next.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="fixed-bottom-left-badge text-center d-none" id="totalCustomersBadge">
+    <span class="d-block text-warning fw-bold text-uppercase" style="font-size: 0.75rem;">Total Customers</span>
+    <span class="fs-4 fw-bold text-white" id="sidebarTotalCustomersCount">0</span>
+  </div>
+
+  <!-- CALCULATOR MODAL -->
+  <div class="modal fade calc-modal" id="calculatorModal" tabindex="-1" aria-labelledby="calculatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-secondary py-2 px-3" style="cursor: move;" id="calculatorHeader">
+          <h6 class="modal-title text-warning fw-bold" id="calculatorModalLabel">🧮 Calculator</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-3">
+          <input type="text" id="calcDisplay" class="form-control calc-display mb-3" value="0" readonly>
+          <div class="row g-2">
+            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="calcClear()">C</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="calcBackspace()">⌫</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100 calc-btn" onclick="calcInput('%')">%</button></div>
+            <div class="col-3"><button class="btn btn-warning w-100 calc-btn fw-bold" onclick="calcInput('/')">÷</button></div>
+
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('7')">7</button></div>
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('8')">8</button></div>
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('9')">9</button></div>
+            <div class="col-3"><button class="btn btn-warning w-100 calc-btn fw-bold" onclick="calcInput('*')">×</button></div>
+
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('4')">4</button></div>
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('5')">5</button></div>
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('6')">6</button></div>
+            <div class="col-3"><button class="btn btn-warning w-100 calc-btn fw-bold" onclick="calcInput('-')">−</button></div>
+
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('1')">1</button></div>
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('2')">2</button></div>
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('3')">3</button></div>
+            <div class="col-3"><button class="btn btn-warning w-100 calc-btn fw-bold" onclick="calcInput('+')">+</button></div>
+
+            <div class="col-6"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('0')">0</button></div>
+            <div class="col-3"><button class="btn btn-dark border-secondary w-100 calc-btn text-white" onclick="calcInput('.')">.</button></div>
+            <div class="col-3"><button class="btn btn-success w-100 calc-btn fw-bold" onclick="calcEqual()">=</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
