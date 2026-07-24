@@ -1,31 +1,47 @@
 /* ==========================================================================
-   MELLOW DIGITALS - CUSTOMER DATA MANAGEMENT SCRIPT
+   MELLOW DIGITALS - CUSTOMER DATA MANAGEMENT SCRIPT (FIREBASE SYNC)
    ========================================================================== */
 
-let customers = JSON.parse(localStorage.getItem("mellow_customers")) || [
-  {
-    id: 1,
-    name: "Sri Vinayaka",
-    studio: "Sri Vinayaka Studio",
-    phone: "9866110228",
-    address: "KJ Puram",
-    events: [
-      {
-        id: 101,
-        date: "2026-07-22",
-        dateTimeStr: "22/07/2026, 08:35:23",
-        description: "fun",
-        duration: "",
-        charge: 0,
-        adv: 0,
-        paidAmt: 0,
-        balance: 0,
-        remarks: "Remarks",
-        handedOver: false
-      }
-    ]
-  }
-];
+// --- FIREBASE CONFIGURATION ---
+const firebaseConfig = {
+  apiKey: "AIzaSyCjh5fneSb_G04XdfD6R219nL0EFOX--6A",
+  authDomain: "mellow-digitals.firebaseapp.com",
+  projectId: "mellow-digitals",
+  storageBucket: "mellow-digitals.firebasestorage.app",
+  messagingSenderId: "1066995720914",
+  appId: "1:1066995720914:web:6fe83d761f222c4725830b",
+  measurementId: "G-5VPQRFY74P"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// --- LOAD CUSTOMERS FROM CLOUD ---
+let customers = [];
+
+function loadCustomers() {
+  db.collection("customers").get().then((querySnapshot) => {
+    customers = [];
+    querySnapshot.forEach((doc) => {
+      let cust = doc.data();
+      cust.firebaseId = doc.id; // Save Firestore document ID
+      customers.push(cust);
+    });
+    sortCustomersAlphabetically();
+    updateSidebarCustomerBadge();
+    renderDatabaseSpreadsheet();
+  });
+}
+
+// --- ADD A NEW CUSTOMER TO CLOUD ---
+function addCustomerToCloud(newCustomerData) {
+  db.collection("customers").add(newCustomerData).then(() => {
+    loadCustomers(); // Refresh list automatically from cloud
+  }).catch((error) => {
+    console.error("Error adding customer: ", error);
+  });
+}
 
 let selectedCustomerId = null;
 let selectedHistoryCustomer = null;
@@ -35,8 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const splashScreen = document.getElementById("splash-screen");
   const appContent = document.getElementById("app-content");
 
-  sortCustomersAlphabetically();
-  updateSidebarCustomerBadge();
+  loadCustomers();
 
   setTimeout(() => {
     if (splashScreen) splashScreen.style.display = "none";
@@ -61,8 +76,16 @@ function sortCustomersAlphabetically() {
 
 function saveAndSortCustomers() {
   sortCustomersAlphabetically();
-  localStorage.setItem("mellow_customers", JSON.stringify(customers));
   updateSidebarCustomerBadge();
+  
+  if (selectedCustomerId) {
+    const currentCust = customers.find(c => c.id === selectedCustomerId);
+    if (currentCust && currentCust.firebaseId) {
+      db.collection("customers").doc(currentCust.firebaseId).set(currentCust).then(() => {
+        loadCustomers();
+      });
+    }
+  }
 }
 
 function getCurrentFormattedTime() {
@@ -183,9 +206,8 @@ function handleNewCustomerSubmit(event) {
     events: []
   };
 
-  customers.push(newCust);
-  saveAndSortCustomers();
-  alert(`Customer "${newCust.name}" saved successfully!`);
+  addCustomerToCloud(newCust);
+  alert(`Customer "${newCust.name}" saved successfully to cloud!`);
   document.getElementById("newCustomerForm").reset();
   checkDuplicatePhone("");
 }
@@ -201,15 +223,17 @@ function deleteCurrentCustomer() {
 }
 
 function deleteCustomerById(id) {
-  customers = customers.filter(c => c.id !== id);
-  saveAndSortCustomers();
-
-  if (selectedCustomerId === id) {
-    selectedCustomerId = null;
-    document.getElementById("selectedCustomerContainer").classList.add("d-none");
-    document.getElementById("customerSearchInput").value = "";
+  const customer = customers.find(c => c.id === id);
+  if (customer && customer.firebaseId) {
+    db.collection("customers").doc(customer.firebaseId).delete().then(() => {
+      loadCustomers();
+      if (selectedCustomerId === id) {
+        selectedCustomerId = null;
+        document.getElementById("selectedCustomerContainer").classList.add("d-none");
+        document.getElementById("customerSearchInput").value = "";
+      }
+    });
   }
-  renderDatabaseSpreadsheet();
 }
 
 function searchCustomers() {
@@ -429,7 +453,7 @@ function saveEventEntries() {
     refreshCurrentHistoryView();
   }
 
-  alert("Updates saved successfully!");
+  alert("Updates saved successfully to cloud!");
 }
 
 function handleHistorySearchInput(query) {
@@ -484,7 +508,6 @@ function refreshCurrentHistoryView() {
     netBalanceDue = 0;
   }
 
-  // Covers all potential HTML badge ID variations for the history page
   const advValStr = `₹${activeUnusedAdvance}`;
   const balValStr = netBalanceDue > 0 ? `₹${netBalanceDue}` : `₹0`;
 
@@ -516,6 +539,7 @@ function executeExportOrPrint() {
 
 function renderDatabaseSpreadsheet() {
   const tbody = document.getElementById("databaseTableBody");
+  if (!tbody) return;
   tbody.innerHTML = "";
   customers.forEach((c, idx) => {
     tbody.innerHTML += `<tr><td>${idx+1}</td><td>${c.studio}</td><td>${c.name}</td><td>${c.phone}</td><td>${c.address}</td><td><button class="btn btn-outline-danger btn-sm" onclick="deleteCustomerById(${c.id})">🗑️</button></td></tr>`;
@@ -529,7 +553,7 @@ function filterDatabaseTable(query) {
 }
 
 function saveDatabaseSpreadsheet() {
-  alert("Database saved!");
+  alert("Database synced with cloud!");
 }
 
 let calcExpression = "0";
