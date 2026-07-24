@@ -16,11 +16,9 @@ const firebaseConfig = {
 // Initialize Firebase safely
 if (typeof firebase !== 'undefined') {
   firebase.initializeApp(firebaseConfig);
-} else {
-  console.error("Firebase library failed to load.");
 }
 
-const db = firebase.firestore();
+const db = typeof firebase !== 'undefined' ? firebase.firestore() : null;
 // --- LOAD CUSTOMERS FROM CLOUD ---
 let customers = [];
 
