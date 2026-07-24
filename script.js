@@ -357,29 +357,28 @@ function recalculateTotals() {
     totalPaid += paid;
   });
 
-  // Calculate net balance across events (Charges minus Payments and Advances)
   let netBalanceDue = totalCharges - totalExplicitAdvance - totalPaid;
-
   let activeUnusedAdvance = 0;
   if (netBalanceDue < 0) {
-    // Excess amount becomes the active advance pool for future events
     activeUnusedAdvance = Math.abs(netBalanceDue);
     netBalanceDue = 0;
   }
 
-  // Update Advance Badge (shows unapplied advance pool)
   const advElem = document.getElementById("displayAdvTotal");
-  advElem.innerText = `₹${activeUnusedAdvance}`;
-  advElem.style.color = "#000000";
+  if (advElem) {
+    advElem.innerText = `₹${activeUnusedAdvance}`;
+    advElem.style.color = "#000000";
+  }
 
-  // Update Balance Badge (shows remaining actual dues without refund text)
   const balElem = document.getElementById("displayBalanceTotal");
-  if (netBalanceDue > 0) {
-    balElem.innerText = `₹${netBalanceDue}`;
-    balElem.style.color = "#198754"; // Green
-  } else {
-    balElem.innerText = `₹0`;
-    balElem.style.color = "#000000";
+  if (balElem) {
+    if (netBalanceDue > 0) {
+      balElem.innerText = `₹${netBalanceDue}`;
+      balElem.style.color = "#198754";
+    } else {
+      balElem.innerText = `₹0`;
+      balElem.style.color = "#000000";
+    }
   }
 }
 
@@ -424,6 +423,12 @@ function saveEventEntries() {
   saveAndSortCustomers();
   isTableEditable = false;
   setInputsDisabledState(true);
+  
+  if (selectedHistoryCustomer && selectedHistoryCustomer.id === customer.id) {
+    selectedHistoryCustomer = customer;
+    refreshCurrentHistoryView();
+  }
+
   alert("Updates saved successfully!");
 }
 
@@ -460,6 +465,43 @@ function refreshCurrentHistoryView() {
   tbody.innerHTML = "";
   selectedHistoryCustomer.events.forEach((e, idx) => {
     tbody.innerHTML += `<tr><td>${idx+1}</td><td>${e.date}</td><td>${e.description}</td><td>${e.duration||'-'}</td><td>₹${e.charge}</td><td>₹${e.adv}</td><td>₹${e.paidAmt}</td><td>₹${e.balance}</td><td>${e.remarks||'-'}</td><td>${e.handedOver?'✅':'⏳'}</td></tr>`;
+  });
+
+  let totalExplicitAdvance = 0;
+  let totalCharges = 0;
+  let totalPaid = 0;
+
+  selectedHistoryCustomer.events.forEach(e => {
+    totalExplicitAdvance += (e.adv || 0);
+    totalCharges += (e.charge || 0);
+    totalPaid += (e.paidAmt || 0);
+  });
+
+  let netBalanceDue = totalCharges - totalExplicitAdvance - totalPaid;
+  let activeUnusedAdvance = 0;
+  if (netBalanceDue < 0) {
+    activeUnusedAdvance = Math.abs(netBalanceDue);
+    netBalanceDue = 0;
+  }
+
+  // Covers all potential HTML badge ID variations for the history page
+  const advValStr = `₹${activeUnusedAdvance}`;
+  const balValStr = netBalanceDue > 0 ? `₹${netBalanceDue}` : `₹0`;
+
+  ['histDisplayAdvTotal', 'histTotalAdv'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerText = advValStr;
+      el.style.color = "#000000";
+    }
+  });
+
+  ['histDisplayBalanceTotal', 'histTotalBal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerText = balValStr;
+      el.style.color = netBalanceDue > 0 ? "#198754" : "#000000";
+    }
   });
 }
 
